@@ -227,7 +227,7 @@ const playedEl=document.getElementById('played'), seek=document.getElementById('
 const fileInput=document.getElementById('file');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 const PLAY='M8 5v14l11-7z', PAUSE='M6 5h4v14H6zM14 5h4v14h-4z';
-let playlist=TRACKS.slice(), index=0;
+let playlist=[{ title: "Auric Atmographies", src: "auric-atmographies.mp3" }], index=0;
 
 /* ============ structuring data: live Ljubljana air ============
    Measured PM2.5 for Ljubljana is pulled from the Open-Meteo air
