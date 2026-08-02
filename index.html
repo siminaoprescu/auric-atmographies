@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auric Atmographies</title>
+<meta name="description" content="Auric Atmographies attends to the presence of something intangible, a tenderness, a sensation, an energetic shift that hovers in air and memory.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500&family=Newsreader:opsz,wght@6..72,200;6..72,300;6..72,400&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --air:#9DA19E;
+  --graphite:#1C1F1E;
+  --graphite-2:rgba(28,31,30,.62);
+  --graphite-3:rgba(28,31,30,.42);
+  --hair:rgba(28,31,30,.16);
+  --display:"Syne",system-ui,sans-serif;
+  --body:"Newsreader",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--air); color:var(--graphite); font-family:var(--body); -webkit-font-smoothing:antialiased}
+
+/* ---------------- the room ---------------- */
+#room{position:fixed; inset:0; z-index:0; pointer-events:none}
+#room canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+#bell{filter:blur(17px); opacity:.52}
+#wave{opacity:.92}
+#dust{mix-blend-mode:multiply; opacity:.5}
+#walls{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  background:
+    linear-gradient(to bottom, rgba(180,183,180,.5) 0%, rgba(157,161,158,0) 26%, rgba(157,161,158,0) 60%, rgba(108,112,110,.36) 100%),
+    radial-gradient(140% 100% at 50% 38%, rgba(255,255,255,.10) 0%, rgba(94,98,96,.32) 100%);
+}
+
+/* ---------------- content ---------------- */
+.page{position:relative; z-index:2; max-width:1180px; margin:0 auto; padding:clamp(28px,5vw,64px) clamp(22px,5vw,64px) 200px}
+header{min-height:70vh; display:flex; flex-direction:column; justify-content:flex-end; padding-bottom:clamp(44px,8vh,90px)}
+.eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--graphite-2); margin:0 0 auto}
+.signature{color:inherit; text-decoration:none; border-bottom:1px solid transparent; padding-bottom:2px; transition:color .25s, border-color .25s}
+.signature:hover{color:var(--graphite); border-bottom-color:var(--graphite-3)}
+h1{font-family:var(--display); font-weight:400; font-size:clamp(42px,9.4vw,124px); line-height:.9; letter-spacing:-.018em; margin:0}
+h1 span{display:block}
+h1 span:last-child{padding-left:.13em; color:rgba(28,31,30,.7)}
+
+.prose{max-width:62ch; font-weight:300; font-size:clamp(17px,1.3vw,20px); line-height:1.64}
+.prose p{margin:0 0 1.2em}
+.prose p.lead{font-size:clamp(20px,1.85vw,27px); font-weight:200; line-height:1.44; margin-bottom:1.7em}
+.prose h2{
+  font-family:var(--mono); font-weight:400; font-size:11px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--graphite-2);
+  margin:3.4em 0 1.5em; padding-top:1.5em; border-top:1px solid var(--hair);
+}
+.prose a{color:inherit; text-decoration:none; border-bottom:1px solid var(--graphite-3); transition:border-color .2s}
+.prose a:hover{border-bottom-color:var(--graphite)}
+
+.panel{
+  margin:3.4em 0 0; padding-top:1.5em; border-top:1px solid var(--hair);
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--graphite-2);
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:18px 26px; max-width:62ch;
+}
+.panel div span{display:block; text-transform:uppercase; font-size:10px; letter-spacing:.16em; margin-bottom:5px; color:var(--graphite-3)}
+.panel div b{font-weight:400; font-size:15px; color:var(--graphite); font-variant-numeric:tabular-nums}
+.panel .note{grid-column:1/-1; font-size:10px; line-height:1.7; color:var(--graphite-3); letter-spacing:.04em; margin:0}
+
+/* ---------------- transport ---------------- */
+.transport{
+  position:fixed; left:0; right:0; bottom:0; z-index:3;
+  display:flex; align-items:center; gap:clamp(12px,1.8vw,24px);
+  padding:16px clamp(22px,5vw,64px) 22px;
+  background:linear-gradient(to top, rgba(150,154,151,.94), rgba(150,154,151,0));
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+}
+button.icon{
+  appearance:none; background:rgba(255,255,255,.14); border:1px solid var(--hair);
+  color:var(--graphite); width:50px; height:50px; flex:0 0 50px; border-radius:50%;
+  cursor:pointer; display:grid; place-items:center; transition:background .25s, border-color .25s;
+}
+button.icon:hover:not(:disabled){background:rgba(255,255,255,.3); border-color:rgba(28,31,30,.4)}
+button.icon:disabled{opacity:.35; cursor:not-allowed}
+button.icon svg{width:14px; height:14px; fill:currentColor}
+.meta{flex:1; min-width:0}
+.track{font-family:var(--display); font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.track.empty{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--graphite-2)}
+.clock{font-family:var(--mono); font-size:11px; color:var(--graphite-2); margin-top:3px; font-variant-numeric:tabular-nums}
+.readout{font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--graphite-2); display:flex; gap:16px; flex:0 0 auto}
+.readout b{font-weight:400; color:var(--graphite); font-variant-numeric:tabular-nums}
+.actions{display:flex; gap:16px; flex:0 0 auto}
+.link{
+  font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--graphite-2); background:none; border:0; padding:4px 0; cursor:pointer;
+  border-bottom:1px solid transparent; transition:color .2s, border-color .2s; text-decoration:none;
+}
+.link:hover{color:var(--graphite); border-bottom-color:var(--graphite)}
+#seek{position:fixed; left:0; right:0; bottom:0; height:12px; z-index:4; cursor:pointer; background:none; border:0; padding:0; width:100%}
+#seek::after{content:""; position:absolute; left:0; right:0; bottom:0; height:1px; background:var(--hair)}
+#played{position:absolute; left:0; bottom:0; height:1px; width:0; background:var(--graphite)}
+
+.queue{
+  list-style:none; margin:0; padding:0; position:fixed; z-index:3;
+  top:clamp(28px,5vw,64px); right:clamp(22px,5vw,64px);
+  font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-align:right;
+  color:var(--graphite-2); max-height:38vh; overflow:auto;
+}
+.queue li{margin-bottom:6px}
+.queue button{background:none; border:0; color:inherit; font:inherit; cursor:pointer; padding:2px 0}
+.queue button:hover{color:var(--graphite)}
+.queue li[aria-current="true"] button{color:var(--graphite); text-decoration:underline; text-underline-offset:3px}
+
+body.dragging::after{
+  content:"Drop audio to load"; position:fixed; inset:14px; z-index:9;
+  border:1px dashed rgba(28,31,30,.5); display:grid; place-items:center;
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+  background:rgba(157,161,158,.6); pointer-events:none;
+}
+:focus-visible{outline:2px solid var(--graphite); outline-offset:3px}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
+@media (max-width:760px){ .readout{display:none} header{min-height:56vh} }
+</style>
+</head>
+<body>
+
+<div id="room" aria-hidden="true">
+  <canvas id="bell"></canvas>
+  <canvas id="wave"></canvas>
+  <canvas id="dust"></canvas>
+</div>
+<div id="walls" aria-hidden="true"></div>
+
+<ul class="queue" id="queue"></ul>
+
+<main class="page">
+  <header>
+    <p class="eyebrow"><a class="signature" href="https://siminaoprescu.net/About" target="_blank" rel="noopener">Simina Oprescu</a></p>
+    <h1><span>Auric</span><span>Atmographies</span></h1>
+  </header>
+
+  <div class="prose">
+    <p class="lead">Auric Atmographies attends to the presence of something intangible, a tenderness, a sensation, an energetic shift that hovers in air and memory.</p>
+
+    <p>The website operates as a poetic interface between body, atmosphere, and environmental decay, so that the residues of presence which remain when sight and touch have already withdrawn become perceptible.</p>
+
+    <p>The work draws on the language of quantum field theory, in which particles remain entangled across distance and continue to influence one another outside space and time. Read through that framework, presence becomes a matter of connection as much as of location, and atmosphere can be understood as a medium of entanglement, where tenderness and sensation travel across subtle, non-linear fields.</p>
+
+    <p>Through biometric sensing, sonification, and psychoacoustic phenomena, the work gives material form to something that language reaches for and misses. What it addresses is the air between us, the trembling attention, the auric echo of what we once felt, and the possibility that particulate pollution gradually erodes our contact with each other.</p>
+
+    <p>Air pollution data measured over Ljubljana and biodata gathered there supply the structuring material, acting as a pressure that interferes with clarity and shapes the sound heard on the site. The particulate reading below arrives live from the city as you read. Together these inputs compose a fragile, disembodied signal of tenderness, one that flickers, fails, and returns. The piece opens onto <a href="https://transitionto8.com" target="_blank" rel="noopener">Transition to 8</a>, the project that follows.</p>
+
+    <h2>Brief concept</h2>
+
+    <p>The work concerns auric attention, which can be described as a form of tenderness that requires no witness. Such attention tends to appear in sacred spaces and in moments of deep remembering, when the body registers something that the mind has yet to name.</p>
+
+    <p>A room feels altered after someone has been crying, since an energetic saturation lingers in it. Something comparable happens in a city after prolonged pollution, where the weight in the air is carried in breath and equally in the way thought and feeling become harder to hold. Understood in this sense, pollution is environmental, perceptual, and emotional at once, because it clouds, occludes, and disorients. Out of that interference it forms atmographies, which are shifting weather-maps of feeling.</p>
+
+    <p>Because these atmographies alter our energetic fields, the fields expand, shimmer, drift, and at times fail to cohere. Yet in that failure something intimate becomes audible, and it is this atmosphere that Auric Atmographies works through, by way of data, breath, sonic failure, and the remains of tenderness.</p>
+
+    <div class="panel" aria-live="off">
+      <div><span>Ljubljana PM2.5</span><b><span id="pm">—</span> µg/m³</b></div>
+      <div><span>PM10</span><b><span id="pm10">—</span> µg/m³</b></div>
+      <div><span>European AQI</span><b><span id="aqi">—</span></b></div>
+      <div><span>Pulse</span><b><span id="bpm">—</span> bpm</b></div>
+      <div><span>Clarity</span><b><span id="clar">—</span> %</b></div>
+      <div><span>Filter</span><b><span id="cut">—</span> Hz</b></div>
+      <div><span>Field radius</span><b><span id="rad">—</span> m</b></div>
+      <div><span>Beat frequency</span><b><span id="beat">—</span> Hz</b></div>
+      <p class="note" id="src">Reading the air over Ljubljana.</p>
+      <p class="note">Headphones are required. The composition is binaural and takes place in the space between the two ears.</p>
+    </div>
+
+    <h2>What is happening</h2>
+
+    <p>The sound arrives decomposed and redistributed around the listener. Eight bandpass filters divide the spectrum at 70, 150, 320, 640, 1250, 2600, 5200, and 9000 Hz, and each band is then assigned its own position in space through a head-related transfer function, the same measured model of head and outer ear that the brain uses to locate a source in a room. Because the eight orbits run at incommensurate rates, the spectrum never reassembles at a single point, and a sound whose partials belong together arrives from eight places at once. What the ear receives is a body that has been taken apart and hung in the air around it.</p>
+
+    <p>Below the material sits a difference tone. Two sine oscillators, one in each ear, are tuned a few hertz apart. Each ear receives a steady tone, and the pulsation that appears between them is produced in the auditory brainstem where the two signals are compared. The interval between them descends from roughly ten hertz toward four as the particulate load rises, which carries the tone from an alert band toward a slower one. It is off by default and can be raised from the transport.</p>
+
+    <p>Every parameter in the piece is drawn from the same measured value. Live PM2.5 over Ljubljana sets a normalised load between clean and heavy air, and that figure closes a lowpass filter across the whole signal from fourteen kilohertz down toward eight hundred hertz, contracts the radius of the spectral field so the eight bands crowd toward the centre of the head, lowers the beat frequency of the difference tone, flattens the waveform in the background, pulls in the depth at which traces disappear, thickens the particulate layer over the page, and damps the swing of the bell. Clarity, in this work, is a quantity the atmosphere is permitted to take away.</p>
+
+    <p>Seventy-four traces of the time-domain signal recede into perspective depth behind this text, one written every fortieth of a second, so the field carries the recent acoustic past of the piece drifting out of reach. Crests are rendered as vapour and the resting line as a faint shade, which means silence appears as a dark horizon and sound lifts out of it. Behind all of it hangs the bell, blurred almost to the threshold of recognition, swinging on a slow period that the pulse loosens and the air damps, as a grief symbol.</p>
+  </div>
+</main>
+
+<div class="transport">
+  <button class="icon" id="toggle" disabled aria-label="Play">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path id="glyph" d="M8 5v14l11-7z"/></svg>
+  </button>
+  <div class="meta">
+    <div class="track empty" id="title">Drop an audio file, or use Load audio</div>
+    <div class="clock"><span id="now">0:00</span> / <span id="dur">0:00</span></div>
+  </div>
+  <div class="readout" aria-hidden="true">
+    <span>low <b id="rLow">—</b></span>
+    <span>mid <b id="rMid">—</b></span>
+    <span>high <b id="rHigh">—</b></span>
+  </div>
+  <div class="actions">
+    <button class="link" id="drone" aria-pressed="false">Difference tone off</button>
+    <button class="link" id="pick">Load audio</button>
+    <a class="link" href="https://transitionto8.com" target="_blank" rel="noopener">Transition to 8</a>
+  </div>
+</div>
+
+<button id="seek" aria-label="Seek"><span id="played"></span></button>
+
+<input type="file" id="file" accept="audio/*" multiple class="sr">
+<audio id="audio" crossorigin="anonymous"></audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* =========================================================
+   SOUNDTRACK
+   Place an audio file beside this page and name it below.
+   Leave the array empty to load files by hand.
+   ========================================================= */
+const TRACKS = [
+  // { title: "Auric Atmographies", src: "auric-atmographies.mp3" },
+];
+
+const audio=document.getElementById('audio');
+const bellC=document.getElementById('bell'), waveC=document.getElementById('wave'), dustC=document.getElementById('dust');
+const bx=bellC.getContext('2d'), dx=dustC.getContext('2d');
+const toggle=document.getElementById('toggle'), glyph=document.getElementById('glyph');
+const titleEl=document.getElementById('title'), nowEl=document.getElementById('now'), durEl=document.getElementById('dur');
+const playedEl=document.getElementById('played'), seek=document.getElementById('seek'), queueEl=document.getElementById('queue');
+const fileInput=document.getElementById('file');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)');
+const PLAY='M8 5v14l11-7z', PAUSE='M6 5h4v14H6zM14 5h4v14h-4z';
+let playlist=TRACKS.slice(), index=0;
+
+/* ============ structuring data: live Ljubljana air ============
+   Measured PM2.5 for Ljubljana is pulled from the Open-Meteo air
+   quality service, which serves the CAMS European ensemble. No key
+   is required. The current reading sets the particulate load, and
+   the surrounding hourly series lets the value drift between
+   refreshes. A modelled winter curve stands in if the request
+   fails.                                                        */
+const LJ = { lat: 46.0569, lon: 14.5058 };
+const AQ_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality'
+  + `?latitude=${LJ.lat}&longitude=${LJ.lon}`
+  + '&current=pm2_5,pm10,european_aqi'
+  + '&hourly=pm2_5&past_days=1&forecast_days=1&timezone=auto';
+const REFRESH_MS = 15 * 60 * 1000;
+const PM_FLOOR = 5, PM_CEIL = 75;
+
+const PM_CURVE = [42, 38, 46, 61, 54, 47, 58, 72];
+function modelledPm(t){
+  const n = PM_CURVE.length, x = (t / 3) % n;
+  const i = Math.floor(x), f = x - i;
+  const p0=PM_CURVE[(i-1+n)%n], p1=PM_CURVE[i], p2=PM_CURVE[(i+1)%n], p3=PM_CURVE[(i+2)%n];
+  return 0.5*((2*p1)+(-p0+p2)*f+(2*p0-5*p1+4*p2-p3)*f*f+(-p0+3*p1-3*p2+p3)*f*f*f);
+}
+
+let series=null, liveNow=null, aqi=null, pm10=null, source='connecting', stamp=null;
+
+function seriesAt(ms){
+  if(!series || series.t.length<2) return null;
+  const {t,v}=series;
+  if(ms<=t[0]) return v[0];
+  if(ms>=t[t.length-1]) return v[v.length-1];
+  let i=0; while(i<t.length-2 && t[i+1]<ms) i++;
+  const f=(ms-t[i])/(t[i+1]-t[i]), a=v[i], b=v[i+1];
+  if(a==null||b==null) return a==null?b:a;
+  return a+(b-a)*f;
+}
+async function fetchAir(){
+  try{
+    const r=await fetch(AQ_URL,{cache:'no-store'});
+    if(!r.ok) throw new Error(r.status);
+    const d=await r.json();
+    if(d.current){ liveNow=d.current.pm2_5; pm10=d.current.pm10; aqi=d.current.european_aqi; stamp=d.current.time; }
+    if(d.hourly && d.hourly.time){
+      series={ t:d.hourly.time.map(x=>new Date(x).getTime()), v:d.hourly.pm2_5 };
+    }
+    source='live';
+  }catch(e){ if(source!=='live') source='modelled'; }
+  updateSourceLine();
+}
+fetchAir();
+setInterval(fetchAir, REFRESH_MS);
+
+const DAY_MS = 6*60*1000;
+let pm=30, load=0, bpm=62, phase=0;
+
+/* ============ binaural spectral graph ============
+   The signal is decomposed into eight bands and each band is given
+   its own position around the listener through an HRTF panner. The
+   bands orbit at incommensurate rates, so the spectrum never
+   reassembles at a single point and the composition exists only in
+   the space between the two ears. A pair of detuned oscillators
+   adds a difference tone below the material, its beat frequency
+   drawn from the pulse and the particulate load.                 */
+let ac, analyser, freq, time8, lowpass, master;
+let bands = [], droneL, droneR, droneGain, droneOn = false;
+
+const BAND_HZ = [70, 150, 320, 640, 1250, 2600, 5200, 9000];
+const BAND_Q  = [1.1, 1.3, 1.5, 1.6, 1.7, 1.7, 1.6, 1.4];
+
+function ensureGraph(){
+  if(ac) return;
+  ac = new (window.AudioContext||window.webkitAudioContext)();
+  const src = ac.createMediaElementSource(audio);
+
+  // pollution filter, applied before the spectrum is divided
+  lowpass = ac.createBiquadFilter();
+  lowpass.type='lowpass'; lowpass.frequency.value=12000; lowpass.Q.value=0.6;
+  src.connect(lowpass);
+
+  master = ac.createGain(); master.gain.value = 1;
+
+  // the listener sits at the origin, facing into the field
+  const L = ac.listener;
+  if (L.forwardX){
+    L.forwardX.value=0; L.forwardY.value=0; L.forwardZ.value=-1;
+    L.upX.value=0; L.upY.value=1; L.upZ.value=0;
+    L.positionX.value=0; L.positionY.value=0; L.positionZ.value=0;
+  } else if (L.setOrientation){
+    L.setOrientation(0,0,-1,0,1,0); L.setPosition(0,0,0);
+  }
+
+  BAND_HZ.forEach((hz, i) => {
+    const f = ac.createBiquadFilter();
+    f.type = 'bandpass'; f.frequency.value = hz; f.Q.value = BAND_Q[i];
+
+    const g = ac.createGain();
+    g.gain.value = 1.35;              // bandpass sum sits low, lift it back
+
+    const p = ac.createPanner();
+    p.panningModel = 'HRTF';
+    p.distanceModel = 'inverse';
+    p.refDistance = 1.4;
+    p.rolloffFactor = 0.6;
+    p.coneInnerAngle = 360;
+
+    lowpass.connect(f); f.connect(g); g.connect(p); p.connect(master);
+
+    bands.push({
+      panner: p,
+      // incommensurate orbits: low bands travel slowly and stay close,
+      // high bands circle faster and further out
+      rate:   0.000030 + i * 0.0000185 + (i % 3) * 0.0000067,
+      phase:  (i / BAND_HZ.length) * Math.PI * 2 + i * 0.37,
+      radius: 1.5 + i * 0.28,
+      lift:   Math.sin(i * 1.7) * 0.55
+    });
+  });
+
+  // difference tone, hard left and hard right
+  droneGain = ac.createGain(); droneGain.gain.value = 0;
+  const panL = ac.createStereoPanner ? ac.createStereoPanner() : null;
+  const panR = ac.createStereoPanner ? ac.createStereoPanner() : null;
+  droneL = ac.createOscillator(); droneR = ac.createOscillator();
+  droneL.type = droneR.type = 'sine';
+  droneL.frequency.value = 136.1;              // carrier
+  droneR.frequency.value = 140.1;
+  if (panL){
+    panL.pan.value = -1; panR.pan.value = 1;
+    droneL.connect(panL); panL.connect(droneGain);
+    droneR.connect(panR); panR.connect(droneGain);
+  } else {
+    const merge = ac.createChannelMerger(2);
+    droneL.connect(merge, 0, 0); droneR.connect(merge, 0, 1);
+    merge.connect(droneGain);
+  }
+  droneGain.connect(master);
+  droneL.start(); droneR.start();
+
+  analyser = ac.createAnalyser();
+  analyser.fftSize = 2048;
+  analyser.smoothingTimeConstant = .8;
+  freq  = new Uint8Array(analyser.frequencyBinCount);
+  time8 = new Uint8Array(analyser.fftSize);
+
+  master.connect(analyser); analyser.connect(ac.destination);
+}
+
+/* move the bands, and tune the difference tone to the body and the air */
+function updateSpatial(time){
+  if(!ac) return;
+  const t = ac.currentTime;
+  for (const b of bands){
+    // pollution contracts the field: the bands crowd toward the centre
+    const r = b.radius * (1 - load * 0.45);
+    const a = b.phase + time * b.rate * (1 - load * 0.3);
+    const x = Math.sin(a) * r;
+    const z = Math.cos(a) * r - 0.35;
+    const y = b.lift * (1 - load * 0.5);
+    const p = b.panner;
+    if (p.positionX){
+      p.positionX.setTargetAtTime(x, t, 0.12);
+      p.positionY.setTargetAtTime(y, t, 0.12);
+      p.positionZ.setTargetAtTime(z, t, 0.12);
+    } else {
+      p.setPosition(x, y, z);
+    }
+  }
+  if (droneL){
+    // beat frequency descends from alpha toward theta as the air thickens
+    const beatHz = 10.5 - load * 6.0 + (bpm - 60) * 0.02;
+    droneL.frequency.setTargetAtTime(136.1, t, 1.2);
+    droneR.frequency.setTargetAtTime(136.1 + beatHz, t, 1.2);
+    droneGain.gain.setTargetAtTime(droneOn ? 0.055 : 0, t, 0.8);
+  }
+}
+
+/* ============ waveform waterfall, three.js ============
+   Each trace is one frame of the time-domain signal. New traces
+   enter at the front and recede, so the field behind the text is
+   the recent acoustic past of the piece, receding as it is lost. */
+const TRACES = 74;        // how far back the memory reaches
+const POINTS = 256;       // samples per trace
+const SPACING = 0.42;     // depth between traces
+const SHIFT_MS = 40;      // one trace every fortieth of a second
+
+let renderer, scene, camera, group, traces = [], waveMat;
+let waveAmp = 0;          // eased amplitude of the incoming trace
+
+function initWave(){
+  renderer = new THREE.WebGLRenderer({ canvas: waveC, antialias: true, alpha: true });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(42, 1, 0.1, 120);
+  camera.position.set(0, 2.4, 10.5);
+  camera.lookAt(0, 0.2, -12);
+
+  group = new THREE.Group();
+  scene.add(group);
+
+  waveMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    uniforms: {
+      uColor:   { value: new THREE.Color(0xF2F4F1) },
+      uShadow:  { value: new THREE.Color(0x3A3E3C) },
+      uOpacity: { value: 0.5 },
+      uNear:    { value: 4.0 },
+      uFar:     { value: 34.0 }
+    },
+    vertexShader: `
+      attribute float aEdge;
+      varying float vAlpha;
+      varying float vHeight;
+      uniform float uNear;
+      uniform float uFar;
+      void main(){
+        vec4 mv = modelViewMatrix * vec4(position, 1.0);
+        float d = -mv.z;
+        float depth = smoothstep(uFar, uNear, d);
+        vAlpha = aEdge * depth * depth;
+        vHeight = abs(position.y);
+        gl_Position = projectionMatrix * mv;
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColor;
+      uniform vec3 uShadow;
+      uniform float uOpacity;
+      varying float vAlpha;
+      varying float vHeight;
+      void main(){
+        // crests read as vapour, the resting line as a faint shade
+        vec3 c = mix(uShadow, uColor, clamp(vHeight * 2.4, 0.0, 1.0));
+        gl_FragColor = vec4(c, vAlpha * uOpacity);
+      }
+    `
+  });
+
+  for (let i = 0; i < TRACES; i++){
+    const g = new THREE.BufferGeometry();
+    const pos = new Float32Array(POINTS * 3);
+    const edge = new Float32Array(POINTS);
+    for (let j = 0; j < POINTS; j++){
+      const u = j / (POINTS - 1);
+      pos[j*3]   = (u - 0.5) * 26;      // width of the field
+      pos[j*3+1] = 0;
+      pos[j*3+2] = 0;
+      // taper the ends so traces dissolve at the edges of the room
+      edge[j] = Math.pow(Math.sin(u * Math.PI), 0.85);
+    }
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('aEdge', new THREE.BufferAttribute(edge, 1));
+    const line = new THREE.Line(g, waveMat);
+    line.position.z = -i * SPACING;
+    line.frustumCulled = false;
+    group.add(line);
+    traces.push(line);
+  }
+}
+
+let head = 0;             // index of the trace currently at the front
+function pushTrace(sample){
+  head = (head - 1 + TRACES) % TRACES;
+  const line = traces[head];
+  const pos = line.geometry.attributes.position.array;
+  for (let j = 0; j < POINTS; j++){
+    pos[j*3+1] = sample(j / (POINTS - 1));
+  }
+  line.geometry.attributes.position.needsUpdate = true;
+  // re-seat every trace by its distance from the head
+  for (let i = 0; i < TRACES; i++){
+    const t = traces[(head + i) % TRACES];
+    t.position.z = -i * SPACING;
+  }
+}
+
+/* live sample: the time-domain signal, decimated to POINTS */
+function liveSample(){
+  analyser.getByteTimeDomainData(time8);
+  const stride = time8.length / POINTS;
+  const gain = 3.1 * (1 - load * 0.55);      // heavy air flattens the trace
+  return u => {
+    const i = Math.min(time8.length - 1, Math.round(u * (POINTS - 1) * stride));
+    return ((time8[i] - 128) / 128) * gain;
+  };
+}
+
+/* idle: a slow breath so the room moves before anything is loaded */
+function idleSample(time){
+  const a = 0.30 * (1 - load * 0.55);
+  return u => {
+    const x = u * Math.PI * 2;
+    return a * (
+      Math.sin(x * 1 + time * 0.00042) * 0.62 * Math.sin(time * 0.00017) +
+      Math.sin(x * 2.3 - time * 0.00061) * 0.26 +
+      Math.sin(x * 5.1 + time * 0.00088) * 0.11
+    ) * Math.sin(u * Math.PI);
+  };
+}
+
+/* ============ bell silhouette ============ */
+const BELL_W=440, BELL_H=460;
+const sprite=document.createElement('canvas');
+sprite.width=BELL_W; sprite.height=BELL_H;
+(function paintBell(){
+  const c=sprite.getContext('2d');
+  const shade=c.createLinearGradient(0,60,0,420);
+  shade.addColorStop(0,'rgba(38,42,40,.44)');
+  shade.addColorStop(.5,'rgba(38,42,40,.34)');
+  shade.addColorStop(1,'rgba(38,42,40,.22)');
+  c.beginPath();
+  c.moveTo(162,112);
+  c.bezierCurveTo(154,140,136,156,126,186);
+  c.bezierCurveTo(114,226,106,256,100,292);
+  c.bezierCurveTo(90,330,74,348,64,366);
+  c.lineTo(60,388);
+  c.bezierCurveTo(112,414,328,414,380,388);
+  c.lineTo(376,366);
+  c.bezierCurveTo(366,348,350,330,340,292);
+  c.bezierCurveTo(334,256,326,226,314,186);
+  c.bezierCurveTo(304,156,286,140,278,112);
+  c.bezierCurveTo(262,100,178,100,162,112);
+  c.closePath();
+  c.fillStyle=shade; c.fill();
+  c.beginPath();
+  c.moveTo(60,388);
+  c.bezierCurveTo(112,414,328,414,380,388);
+  c.bezierCurveTo(378,398,376,404,374,410);
+  c.bezierCurveTo(322,436,118,436,66,410);
+  c.closePath();
+  c.fillStyle='rgba(38,42,40,.18)'; c.fill();
+  c.beginPath(); c.ellipse(220,414,152,21,0,0,Math.PI*2);
+  c.fillStyle='rgba(30,34,32,.10)'; c.fill();
+  c.beginPath(); c.ellipse(220,406,17,23,0,0,Math.PI*2);
+  c.fillStyle='rgba(30,34,32,.20)'; c.fill();
+})();
+
+/* ============ particulate ============ */
+const DUST_N = 260;
+const motes = Array.from({length:DUST_N}, () => ({
+  x:Math.random(), y:Math.random(), r:0.4+Math.random()*1.9,
+  vx:(Math.random()-.5)*0.000035, vy:-0.000012-Math.random()*0.000030,
+  ph:Math.random()*Math.PI*2
+}));
+
+/* ============ sizing ============ */
+let dpr=1;
+function fit(){
+  dpr = Math.min(devicePixelRatio||1, 2);
+  for(const c of [bellC, dustC]){ c.width = innerWidth*dpr; c.height = innerHeight*dpr; }
+  if (renderer){
+    renderer.setSize(innerWidth, innerHeight, false);
+    camera.aspect = innerWidth / innerHeight;
+    // pull the camera back on narrow screens so the field still reads
+    camera.position.z = 10.5 + Math.max(0, (1.1 - camera.aspect)) * 6.5;
+    camera.updateProjectionMatrix();
+  }
+}
+
+/* ============ render ============ */
+let lastShift=0, last=0, shiftFrac=0;
+function frame(time){
+  const dt = Math.min(64, time - last); last = time;
+  const playing = !audio.paused && !audio.ended && audio.readyState > 2;
+
+  /* --- structuring data --- */
+  let target = seriesAt(Date.now());
+  if (target == null) target = liveNow;
+  if (target == null) target = modelledPm((time % DAY_MS) / DAY_MS * 24);
+  pm += (target - pm) * 0.015;
+  load = Math.min(1, Math.max(0, (pm - PM_FLOOR) / (PM_CEIL - PM_FLOOR)));
+  bpm += (58 + load * 26 - bpm) * 0.006;
+  phase = (phase + dt / (60000 / bpm)) % 1;
+  if (lowpass){
+    lowpass.frequency.setTargetAtTime(14000 * Math.pow(0.055, load), ac.currentTime, 0.4);
+  }
+  updateSpatial(time);
+  updatePanel();
+
+  /* --- bell --- */
+  const beat = Math.exp(-phase * 5.2);
+  const swing = reduce.matches ? 0.012
+    : (Math.sin(time/4200) * 0.042 * (0.55 + 0.45*Math.sin(time/17000))) * (1 - load*0.4)
+      + Math.sin(time/900) * 0.0035 * beat;
+  const W=bellC.width, H=bellC.height;
+  bx.clearRect(0,0,W,H);
+  const scale=(H*0.94)/BELL_H;
+  bx.save();
+  bx.translate(W*0.5, -H*0.10);
+  bx.rotate(swing);
+  bx.globalAlpha = (0.60 + 0.07*Math.sin(time/5300)) * (1 - load*0.30);
+  bx.drawImage(sprite, -220*scale, -58*scale, BELL_W*scale, BELL_H*scale);
+  bx.restore();
+
+  /* --- waveform --- */
+  if (renderer){
+    const step = reduce.matches ? SHIFT_MS * 4 : SHIFT_MS;
+    if (time - lastShift >= step){
+      lastShift = time;
+      if (playing && analyser){ pushTrace(liveSample()); updateLevels(); }
+      else { pushTrace(idleSample(time)); }
+    }
+    // ease between shifts so the recession stays continuous
+    shiftFrac = Math.min(1, (time - lastShift) / step);
+    group.position.z = -SPACING * shiftFrac;
+    group.rotation.y = Math.sin(time * 0.000047) * 0.045;
+    group.position.y = -0.35 + Math.sin(time * 0.00009) * 0.12;
+    waveMat.uniforms.uOpacity.value = (playing ? 0.58 : 0.40) * (1 - load * 0.42);
+    waveMat.uniforms.uFar.value = 34.0 - load * 13.0;   // the air shortens the view
+    renderer.render(scene, camera);
+  }
+
+  /* --- particulate --- */
+  dx.clearRect(0,0,W,H);
+  dx.fillStyle = `rgba(112,116,113,${(load*0.16).toFixed(3)})`;
+  dx.fillRect(0,0,W,H);
+  const count = Math.round(DUST_N * (0.10 + load*0.55));
+  for (let i=0;i<count;i++){
+    const m = motes[i];
+    m.x += m.vx*dt + Math.sin(time*0.00021 + m.ph)*0.000045*dt;
+    m.y += m.vy*dt*(1 - load*0.5);
+    if (m.y < -0.02){ m.y = 1.02; m.x = Math.random(); }
+    if (m.x < -0.02) m.x = 1.02; else if (m.x > 1.02) m.x = -0.02;
+    dx.beginPath();
+    dx.arc(m.x*W, m.y*H, m.r*dpr, 0, Math.PI*2);
+    dx.fillStyle = `rgba(86,90,88,${(0.05 + load*0.13).toFixed(3)})`;
+    dx.fill();
+  }
+
+  if (playing && audio.duration){
+    playedEl.style.width = (audio.currentTime/audio.duration*100)+'%';
+    nowEl.textContent = fmt(audio.currentTime);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ============ readouts ============ */
+const pmEl=document.getElementById('pm'), bpmEl=document.getElementById('bpm'),
+      clarEl=document.getElementById('clar'), cutEl=document.getElementById('cut'),
+      pm10El=document.getElementById('pm10'), aqiEl=document.getElementById('aqi'),
+      srcEl=document.getElementById('src'), radEl=document.getElementById('rad'),
+      beatEl=document.getElementById('beat'), droneBtn=document.getElementById('drone');
+
+droneBtn.addEventListener('click', async () => {
+  ensureGraph();
+  if (ac.state === 'suspended') await ac.resume();
+  droneOn = !droneOn;
+  droneBtn.textContent = droneOn ? 'Difference tone on' : 'Difference tone off';
+  droneBtn.setAttribute('aria-pressed', String(droneOn));
+});
+function updateSourceLine(){
+  if(!srcEl) return;
+  if(source==='live'){
+    const when = stamp ? new Date(stamp).toLocaleString('en-GB',
+      {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+    srcEl.textContent = 'Measured over Ljubljana, 46.06 N 14.51 E. CAMS European ensemble via Open-Meteo, observed ' + when + ' local time, refreshed every fifteen minutes.';
+  } else {
+    srcEl.textContent = 'The live reading is unavailable, so the page runs on a modelled winter diurnal curve for the Ljubljana basin.';
+  }
+}
+let panelTick=0;
+function updatePanel(){
+  if(++panelTick % 20) return;
+  pmEl.textContent   = pm.toFixed(1);
+  pm10El.textContent = pm10==null ? '—' : pm10.toFixed(1);
+  aqiEl.textContent  = aqi==null ? '—' : Math.round(aqi);
+  bpmEl.textContent  = bpm.toFixed(0);
+  clarEl.textContent = ((1-load)*100).toFixed(0);
+  cutEl.textContent  = Math.round(14000*Math.pow(0.055,load)).toLocaleString('en-US');
+  radEl.textContent  = (2.5 * (1 - load*0.45)).toFixed(2);
+  beatEl.textContent = (10.5 - load*6.0 + (bpm-60)*0.02).toFixed(2);
+}
+const rLow=document.getElementById('rLow'), rMid=document.getElementById('rMid'), rHigh=document.getElementById('rHigh');
+function band(a,b){ let s=0; for(let i=a;i<b;i++) s+=freq[i]; return s/(b-a)/255; }
+function db(v){ return v<=.001 ? '−∞' : (20*Math.log10(v)).toFixed(1); }
+let tick=0;
+function updateLevels(){
+  if(++tick % 6) return;
+  analyser.getByteFrequencyData(freq);
+  const n=freq.length;
+  rLow.textContent=db(band(1,n*.04));
+  rMid.textContent=db(band(n*.04,n*.22));
+  rHigh.textContent=db(band(n*.22,n*.7));
+}
+
+/* ============ transport ============ */
+function fmt(s){
+  if(!isFinite(s)) return '0:00';
+  const m=Math.floor(s/60), r=Math.floor(s%60);
+  return m+':'+String(r).padStart(2,'0');
+}
+function loadTrack(i, autoplay){
+  const t=playlist[i];
+  if(!t) return;
+  index=i; audio.src=t.src;
+  titleEl.textContent=t.title; titleEl.classList.remove('empty');
+  toggle.disabled=false; renderQueue();
+  if(autoplay) play();
+}
+async function play(){
+  ensureGraph();
+  if(ac.state==='suspended') await ac.resume();
+  try{ await audio.play(); }catch(e){ titleEl.textContent='This file could not play'; }
+}
+toggle.addEventListener('click',()=> audio.paused ? play() : audio.pause());
+audio.addEventListener('play', ()=>{ glyph.setAttribute('d',PAUSE); toggle.setAttribute('aria-label','Pause'); });
+audio.addEventListener('pause',()=>{ glyph.setAttribute('d',PLAY);  toggle.setAttribute('aria-label','Play'); });
+audio.addEventListener('loadedmetadata',()=> durEl.textContent=fmt(audio.duration));
+audio.addEventListener('ended',()=>{ if(index+1<playlist.length) loadTrack(index+1,true); });
+seek.addEventListener('click',e=>{ if(audio.duration) audio.currentTime=(e.clientX/innerWidth)*audio.duration; });
+addEventListener('keydown',e=>{
+  if(e.code==='Space' && !/^(BUTTON|INPUT|TEXTAREA|A)$/.test(e.target.tagName)){
+    e.preventDefault();
+    if(!toggle.disabled) audio.paused ? play() : audio.pause();
+  }
+});
+
+/* ============ loading ============ */
+function addFiles(files){
+  const list=[...files].filter(f=>f.type.startsWith('audio/'));
+  if(!list.length) return;
+  const start=playlist.length;
+  list.forEach(f=>playlist.push({
+    title:f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' '),
+    src:URL.createObjectURL(f)
+  }));
+  loadTrack(start,true);
+}
+document.getElementById('pick').addEventListener('click',()=>fileInput.click());
+fileInput.addEventListener('change',()=>addFiles(fileInput.files));
+['dragenter','dragover'].forEach(t=>addEventListener(t,e=>{ e.preventDefault(); document.body.classList.add('dragging'); }));
+addEventListener('dragleave',e=>{ if(e.relatedTarget===null) document.body.classList.remove('dragging'); });
+addEventListener('drop',e=>{ e.preventDefault(); document.body.classList.remove('dragging'); addFiles(e.dataTransfer.files); });
+
+function renderQueue(){
+  if(playlist.length<2){ queueEl.innerHTML=''; return; }
+  queueEl.innerHTML='';
+  playlist.forEach((t,i)=>{
+    const li=document.createElement('li');
+    li.setAttribute('aria-current', i===index);
+    const b=document.createElement('button');
+    b.textContent=String(i+1).padStart(2,'0')+'  '+t.title;
+    b.onclick=()=>loadTrack(i,true);
+    li.appendChild(b);
+    queueEl.appendChild(li);
+  });
+}
+
+/* ============ boot ============ */
+if (window.THREE){ initWave(); } else { waveC.style.display='none'; }
+fit();
+addEventListener('resize', fit);
+if(playlist.length) loadTrack(0,false);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
