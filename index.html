@@ -110,12 +110,6 @@ button.icon svg{width:14px; height:14px; fill:currentColor}
 .queue button:hover{color:var(--graphite)}
 .queue li[aria-current="true"] button{color:var(--graphite); text-decoration:underline; text-underline-offset:3px}
 
-body.dragging::after{
-  content:"Drop audio to load"; position:fixed; inset:14px; z-index:9;
-  border:1px dashed rgba(28,31,30,.5); display:grid; place-items:center;
-  font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
-  background:rgba(157,161,158,.6); pointer-events:none;
-}
 :focus-visible{outline:2px solid var(--graphite); outline-offset:3px}
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
 @media (max-width:760px){ .readout{display:none} header{min-height:56vh} }
@@ -187,7 +181,7 @@ body.dragging::after{
     <svg viewBox="0 0 24 24" aria-hidden="true"><path id="glyph" d="M8 5v14l11-7z"/></svg>
   </button>
   <div class="meta">
-    <div class="track empty" id="title">Drop an audio file, or use Load audio</div>
+    <div class="track empty" id="title">Auric Atmographies</div>
     <div class="clock"><span id="now">0:00</span> / <span id="dur">0:00</span></div>
   </div>
   <div class="readout" aria-hidden="true">
@@ -197,24 +191,21 @@ body.dragging::after{
   </div>
   <div class="actions">
     <button class="link" id="drone" aria-pressed="false">Difference tone off</button>
-    <button class="link" id="pick">Load audio</button>
     <a class="link" href="https://transitionto8.com" target="_blank" rel="noopener">Transition to 8</a>
   </div>
 </div>
 
 <button id="seek" aria-label="Seek"><span id="played"></span></button>
 
-<input type="file" id="file" accept="audio/*" multiple class="sr">
 <audio id="audio" crossorigin="anonymous"></audio>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 /* =========================================================
    SOUNDTRACK
-   Place an audio file beside this page and name it below.
-   Leave the array empty to load files by hand.
+   The audio file sits beside this page in the repository.
    ========================================================= */
-  const TRACKS = [
+const TRACKS = [
   { title: "Auric Atmographies", src: "auric-atmographies.mp3" },
 ];
 
@@ -224,10 +215,9 @@ const bx=bellC.getContext('2d'), dx=dustC.getContext('2d');
 const toggle=document.getElementById('toggle'), glyph=document.getElementById('glyph');
 const titleEl=document.getElementById('title'), nowEl=document.getElementById('now'), durEl=document.getElementById('dur');
 const playedEl=document.getElementById('played'), seek=document.getElementById('seek'), queueEl=document.getElementById('queue');
-const fileInput=document.getElementById('file');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 const PLAY='M8 5v14l11-7z', PAUSE='M6 5h4v14H6zM14 5h4v14h-4z';
-let playlist=[{ title: "Auric Atmographies", src: "auric-atmographies.mp3" }], index=0;
+let playlist=TRACKS.slice(), index=0;
 
 /* ============ structuring data: live Ljubljana air ============
    Measured PM2.5 for Ljubljana is pulled from the Open-Meteo air
@@ -746,23 +736,6 @@ addEventListener('keydown',e=>{
     if(!toggle.disabled) audio.paused ? play() : audio.pause();
   }
 });
-
-/* ============ loading ============ */
-function addFiles(files){
-  const list=[...files].filter(f=>f.type.startsWith('audio/'));
-  if(!list.length) return;
-  const start=playlist.length;
-  list.forEach(f=>playlist.push({
-    title:f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' '),
-    src:URL.createObjectURL(f)
-  }));
-  loadTrack(start,true);
-}
-document.getElementById('pick').addEventListener('click',()=>fileInput.click());
-fileInput.addEventListener('change',()=>addFiles(fileInput.files));
-['dragenter','dragover'].forEach(t=>addEventListener(t,e=>{ e.preventDefault(); document.body.classList.add('dragging'); }));
-addEventListener('dragleave',e=>{ if(e.relatedTarget===null) document.body.classList.remove('dragging'); });
-addEventListener('drop',e=>{ e.preventDefault(); document.body.classList.remove('dragging'); addFiles(e.dataTransfer.files); });
 
 function renderQueue(){
   if(playlist.length<2){ queueEl.innerHTML=''; return; }
